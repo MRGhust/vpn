@@ -4,6 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>آنتی سم پینگ</title>
+    <script>
+      // WARNING: This is an insecure method for handling API keys, as it exposes the key
+      // in client-side code. For production, use a secure method like a backend proxy.
+      window.process = {
+        env: {
+          API_KEY: "AIzaSyAGwa7HmFU_cvycUzvhJM1PbCvhRvCwCUQ"
+        }
+      };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

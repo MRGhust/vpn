@@ -11,34 +11,28 @@ export const PlanCard: React.FC<PlanCardProps> = ({ plan, discount }) => {
   const hasDiscount = discount > 0;
 
   const formatPrice = (price: number) => {
-    return `${price.toLocaleString('fa-IR')} تومان`;
+    return price.toLocaleString('en-US'); // Use latin numerals with commas as in the image
   };
 
   return (
-    <div className="bg-slate-800 rounded-xl border border-slate-700 p-6 flex flex-col text-center shadow-lg hover:shadow-cyan-500/20 hover:border-cyan-500 transition-all duration-300 transform hover:-translate-y-2">
-      <div className="flex-grow">
-        <h3 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 text-transparent bg-clip-text mb-2">
-          {plan.volume} گیگابایت
-        </h3>
-        <p className="text-slate-400 mb-6">{plan.duration} ماهه</p>
-        
-        {hasDiscount && (
-          <p className="text-lg text-slate-500 line-through">
-            {formatPrice(plan.basePrice)}
-          </p>
-        )}
-        <p className={`text-3xl font-extrabold mb-6 ${hasDiscount ? 'text-green-400' : 'text-white'}`}>
-          {formatPrice(discountedPrice)}
+    <a
+      href="https://t.me/samvpn_robot"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="bg-slate-800 rounded-xl border border-slate-700 p-4 flex flex-col justify-center text-center shadow-lg hover:shadow-purple-500/20 hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-2 group min-h-[90px]"
+    >
+      {hasDiscount && (
+        <p className="text-sm text-slate-500 line-through">
+          {formatPrice(plan.basePrice)} تومان
         </p>
+      )}
+      <div className={`font-bold text-xl flex items-baseline justify-center gap-x-2 flex-wrap ${hasDiscount ? 'text-green-400' : 'text-white'}`}>
+        <span className="text-yellow-400 text-2xl" aria-hidden="true">⚡</span>
+        <span>{plan.volume}GB</span>
+        <span className="text-slate-600 font-light">|</span>
+        <span>{formatPrice(discountedPrice)}</span>
+        <span className="text-slate-400 text-base font-medium">تومان</span>
       </div>
-      <a
-        href="https://t.me/samvpn_robot"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block w-full bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-bold py-3 rounded-lg hover:opacity-90 transition-opacity"
-      >
-        خرید سرویس
-      </a>
-    </div>
+    </a>
   );
 };

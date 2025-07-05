@@ -1,49 +1,30 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import type { Plan } from '../types';
 import { PlanCard } from './PlanCard';
 import { ChevronLeftIcon } from './icons/ChevronLeftIcon';
+import * as api from '../lib/data';
 
 interface PurchasePageProps {
   onBack: () => void;
 }
 
-const generatePlans = (duration: 1 | 3): Plan[] => {
-  const plans: Plan[] = [];
-  if (duration === 1) {
-    const minGb = 5;
-    const maxGb = 500;
-    const step = 5;
-    const minPrice = 18000;
-    const maxPrice = 674000;
-    const priceSlope = (maxPrice - minPrice) / (maxGb - minGb);
-
-    for (let gb = minGb; gb <= maxGb; gb += step) {
-      const price = Math.round(minPrice + (gb - minGb) * priceSlope);
-      plans.push({ id: `1m-${gb}g`, duration: 1, volume: gb, basePrice: price });
-    }
-  } else {
-    const minGb = 20;
-    const maxGb = 1000;
-    const step = 10;
-    const minPrice = 69000;
-    const maxPrice = 1226000;
-    const priceSlope = (maxPrice - minPrice) / (maxGb - minGb);
-
-    for (let gb = minGb; gb <= maxGb; gb += step) {
-      const price = Math.round(minPrice + (gb - minGb) * priceSlope);
-      plans.push({ id: `3m-${gb}g`, duration: 3, volume: gb, basePrice: price });
-    }
-  }
-  return plans;
-};
-
 const PurchasePage: React.FC<PurchasePageProps> = ({ onBack }) => {
-  const [activeTab, setActiveTab] = useState<'1-month' | '3-months'>('1-month');
+  const [activeTab, setActiveTab] = useState<'1-month' | '3-months'>('3-months');
   const [discountCode, setDiscountCode] = useState('');
   const [appliedDiscount, setAppliedDiscount] = useState(0);
+  const [allPlans, setAllPlans] = useState<Plan[]>([]);
 
-  const oneMonthPlans = useMemo(() => generatePlans(1), []);
-  const threeMonthPlans = useMemo(() => generatePlans(3), []);
+  useEffect(() => {
+    setAllPlans(api.getPlans());
+  }, []);
+
+  const { oneMonthPlans, threeMonthPlans } = useMemo(() => {
+    return {
+      oneMonthPlans: allPlans.filter(p => p.duration === 1).sort((a,b) => a.volume - b.volume),
+      threeMonthPlans: allPlans.filter(p => p.duration === 3).sort((a,b) => a.volume - b.volume),
+    };
+  }, [allPlans]);
+
 
   const handleApplyDiscount = () => {
     if (discountCode.toLowerCase() === 'nazi') {
@@ -99,7 +80,7 @@ const PurchasePage: React.FC<PurchasePageProps> = ({ onBack }) => {
         )}
       </div>
 
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {plansToShow.map(plan => (
           <PlanCard key={plan.id} plan={plan} discount={appliedDiscount} />
         ))}

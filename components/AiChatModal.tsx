@@ -25,7 +25,13 @@ const AiChatModal: React.FC<AiChatModalProps> = ({ isOpen, onClose }) => {
   useEffect(() => {
     if (isOpen) {
       try {
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
+        const apiKey = (window as any).process?.env?.API_KEY;
+        if (!apiKey) {
+          console.error("AI API Key not found. Make sure it is set in index.html");
+          throw new Error("API Key is not configured.");
+        }
+
+        const ai = new GoogleGenAI({ apiKey });
         const chatInstance = ai.chats.create({
           model: 'gemini-2.5-flash-preview-04-17',
           config: {
@@ -36,7 +42,7 @@ const AiChatModal: React.FC<AiChatModalProps> = ({ isOpen, onClose }) => {
         setMessages([{ role: 'model', text: 'سلام! من دستیار هوش مصنوعی آنتی سم پینگ هستم. چطور می‌توانم کمکتان کنم؟' }]);
       } catch (error) {
          console.error("AI initialization failed:", error);
-         setMessages([{ role: 'model', text: 'متاسفانه امکان اتصال به دستیار هوشمند وجود ندارد.' }]);
+         setMessages([{ role: 'model', text: 'متاسفانه امکان اتصال به دستیار هوشمند وجود ندارد. لطفا با پشتیبانی فنی تماس بگیرید.' }]);
       }
     } else {
         // Reset state when modal is closed
