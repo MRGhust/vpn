@@ -9,6 +9,8 @@ interface TutorialPageProps {
 
 const TutorialPage: React.FC<TutorialPageProps> = ({ onBack }) => {
   const configUrl = "https://s33.picofile.com/d/8485586518/b12de498-a6bd-409b-97eb-e3a819600e0e/SAM_VPN_Config_V5.ovpn";
+  const windowsUrl = "https://s33.picofile.com/d/8485588284/bf05c9ed-8f83-40f6-a9e2-e13ed5627259/openvpn_connect_3_6_0_4074_signed_1_.msi";
+  const androidUrl = "https://s33.picofile.com/d/8485588242/823f9f9d-735b-4945-a581-72482111bd74/openvpn_android.apk";
 
   return (
     <div className="space-y-8">
@@ -44,7 +46,25 @@ const TutorialPage: React.FC<TutorialPageProps> = ({ onBack }) => {
                     <div className="bg-cyan-500 text-slate-900 font-bold rounded-full w-8 h-8 flex-shrink-0 flex items-center justify-center mt-1">2</div>
                     <div>
                         <h3 className="font-bold text-white mb-1">نصب OpenVPN Connect</h3>
-                        <p>نرم‌افزار <a href="https://openvpn.net/client-connect-vpn-for-windows/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">OpenVPN Connect</a> را متناسب با سیستم عامل خود (Windows, macOS, Android, or iOS) از وب‌سایت رسمی OpenVPN دانلود و نصب کنید.</p>
+                        <p>نرم‌افزار OpenVPN Connect را متناسب با سیستم عامل خود دانلود و نصب کنید. می‌توانید از لینک‌های زیر استفاده کنید. برای سیستم‌عامل‌های دیگر به <a href="https://openvpn.net/client-connect-vpn-for-windows/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">وب‌سایت رسمی OpenVPN</a> مراجعه کنید.</p>
+                        <div className="mt-4 flex flex-col sm:flex-row gap-4">
+                            <a 
+                                href={windowsUrl}
+                                download
+                                className="inline-flex items-center justify-center gap-3 bg-slate-700 text-white font-semibold px-6 py-3 rounded-lg hover:bg-slate-600 transition-colors shadow-lg"
+                            >
+                                <ArrowDownTrayIcon />
+                                <span>دانلود برای ویندوز</span>
+                            </a>
+                            <a 
+                                href={androidUrl}
+                                download
+                                className="inline-flex items-center justify-center gap-3 bg-slate-700 text-white font-semibold px-6 py-3 rounded-lg hover:bg-slate-600 transition-colors shadow-lg"
+                            >
+                                <ArrowDownTrayIcon />
+                                <span>دانلود برای اندروید</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
 

@@ -1,7 +1,7 @@
 import type { Plan, User } from '../types';
 
 // --- CONSTANTS ---
-const USERS_KEY = 'app_users';
+const USERS_KEY = 'app_users'; // Key can remain the same, new structure will overwrite old.
 const PLANS_KEY = 'app_plans';
 const ADMIN_EMAIL = 'ylala4546@gmail.com';
 const ADMIN_PASSWORD = 'samvpn54';
@@ -38,8 +38,12 @@ const defaultPlans: Plan[] = [
 ];
 
 // --- USERS API (LocalStorage simulation) ---
-// In a real app, this would be a secure backend service.
-const getUsersFromStorage = (): Record<string, string> => {
+interface StoredUser {
+  password: string; // In a real app, this would be a hash.
+  isAdmin: boolean;
+}
+
+const getUsersFromStorage = (): Record<string, StoredUser> => {
   const usersJson = localStorage.getItem(USERS_KEY);
   return usersJson ? JSON.parse(usersJson) : {};
 };
@@ -50,7 +54,7 @@ export const addUser = (email: string, password: string):boolean => {
   if (users[lowercasedEmail]) {
     return false; // User already exists
   }
-  users[lowercasedEmail] = password; // In real app, hash the password!
+  users[lowercasedEmail] = { password: password, isAdmin: false };
   localStorage.setItem(USERS_KEY, JSON.stringify(users));
   return true;
 };
@@ -58,17 +62,12 @@ export const addUser = (email: string, password: string):boolean => {
 export const findUser = (email: string, password: string): User | null => {
   const users = getUsersFromStorage();
   const lowercasedEmail = email.toLowerCase();
+  const storedUser = users[lowercasedEmail];
 
-  // First, check for admin credentials
-  if (lowercasedEmail === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-    return { email: ADMIN_EMAIL, isAdmin: true };
-  }
-  
-  // Then, check for regular users
-  if (users[lowercasedEmail] && users[lowercasedEmail] === password) {
+  if (storedUser && storedUser.password === password) {
     return {
       email: lowercasedEmail,
-      isAdmin: false,
+      isAdmin: storedUser.isAdmin,
     };
   }
 
@@ -83,14 +82,12 @@ export const initializeData = () => {
         localStorage.setItem(PLANS_KEY, JSON.stringify(defaultPlans));
     }
     
-    // Initialize users and ensure admin exists.
-    // This makes the admin account persistent without needing a signup.
+    // Initialize users and ensure admin exists with correct credentials.
     const users = getUsersFromStorage();
-    if (!users[ADMIN_EMAIL]) {
-        users[ADMIN_EMAIL] = ADMIN_PASSWORD;
-        localStorage.setItem(USERS_KEY, JSON.stringify(users));
-    }
-}
+    // This will create or overwrite the admin entry, ensuring it's always correct.
+    users[ADMIN_EMAIL] = { password: ADMIN_PASSWORD, isAdmin: true };
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+};
 
 
 // --- PLANS API (LocalStorage) ---
